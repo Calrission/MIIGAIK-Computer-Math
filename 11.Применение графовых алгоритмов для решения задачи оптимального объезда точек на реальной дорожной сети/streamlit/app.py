@@ -67,7 +67,7 @@ def search_address(query: str) -> tuple[list[dict], str | None]:
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):
-    R = 6371000  # радиус Земли в метрах
+    R = 6371000
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -125,7 +125,6 @@ def rebuild_route() -> None:
         radius = st.session_state.custom_radius
         radius_mode = f"фиксированный ({radius / 1000:.1f} км)"
 
-    # Проверяем, нужно ли перезагружать граф
     current_graph_data = st.session_state.graph_data
     current_params = st.session_state.get("graph_params")
     need_reload = False
@@ -396,7 +395,6 @@ def main():
                 col1.write(f"{res['address']} ({res['lat']:.5f}, {res['lon']:.5f})")
                 if col2.button("➕ Добавить", key=f"add_{idx}"):
                     st.session_state.points.append(res)
-                    # Устанавливаем центр карты на новую точку
                     st.session_state.map_center = [res["lat"], res["lon"]]
                     st.session_state.map_zoom = POINT_ZOOM
                     clear_route()
@@ -517,7 +515,6 @@ def main():
         m = create_map_with_route()
         st_folium(m, height=550, use_container_width=True, returned_objects=[])
 
-        # --- Метрики под картой ---
         if st.session_state.route:
             st.divider()
             st.markdown("### 📋 Описание маршрута")
@@ -535,7 +532,6 @@ def main():
             st.caption(f"**Метод:** {r['method']}")
             st.caption(f"**Радиус графа:** {r.get('radius_mode', '—')}")
 
-            # Нумерованный список адресов
             if r.get("tour_indices"):
                 st.markdown("**Порядок точек:**")
                 points_list = st.session_state.points
